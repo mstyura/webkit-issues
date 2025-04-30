@@ -46,6 +46,10 @@
   <div class="controls">
     <button onclick="playAll()">Play All</button>
     <button onclick="pauseAll()">Pause All</button>
+    <label>
+      <input type="checkbox" id="mutedCheckbox">
+      Enable workaround with muted playback start
+    </label>
   </div>
 
   <div class="video-grid">
@@ -62,6 +66,7 @@
   </div>
 
   <script>
+    const useMutedWorkaround = document.getElementById("mutedCheckbox");
     const logEl = document.getElementById('log');
     const videos = Array.from(document.querySelectorAll('video'));
     const mediaEvents = [
@@ -81,12 +86,29 @@
       mediaEvents.forEach(event => {
         video.addEventListener(event, () => {
           log(`video${idx + 1}: ${event}`);
+          const useMuted = mutedCheckbox.checked;
+
+          if (useMuted) {
+            if (event === "pause") {
+              video.muted = true;
+              v.play().catch(e => log(`video error: ${e.message}`))
+            }
+            if (event === "play") {
+              video.muted = false;
+            }
+          }
         });
       });
     });
 
     function playAll() {
-      videos.forEach(v => v.play().catch(e => log(`video error: ${e.message}`)));
+      const useMuted = mutedCheckbox.checked;
+      videos.forEach(v => {
+        if (useMuted) {
+          v.muted = true;
+        }
+        v.play().catch(e => log(`video error: ${e.message}`))
+      });
     }
 
     function pauseAll() {
