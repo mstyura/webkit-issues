@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Grid</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 1rem;
+    }
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    video {
+      width: 100%;
+      max-width: 100%;
+      background: #000;
+    }
+    .controls {
+      margin-bottom: 1rem;
+    }
+    .log-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      border-top: 1px solid #ccc;
+    }
+    .log-container h2 {
+      margin: 0 0 0.5rem 0;
+    }
+    #log {
+      flex: 1;
+      overflow-y: auto;
+      background: #f0f0f0;
+      padding: 1em;
+      font-family: monospace;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <button onclick="playAll()">Play All</button>
+    <button onclick="pauseAll()">Pause All</button>
+  </div>
+
+  <div class="video-grid">
+    <!-- Video Samples has taken from https://hlsjs.video-dev.org/demo/ -->
+    <video id="video1" loop controls playsinline src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"></video>
+    <video id="video2" loop controls playsinline src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"></video>
+    <video id="video3" loop controls playsinline src="https://playertest.longtailvideo.com/adaptive/issue666/playlists/cisq0gim60007xzvi505emlxx.m3u8"></video>
+    <video id="video4" loop controls playsinline src="https://stream.mux.com/v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM.m3u8"></video>
+  </div>
+
+  <div class="log-container">
+    <h2>Event Log</h2>
+    <pre id="log"></pre>
+  </div>
+
+  <script>
+    const logEl = document.getElementById('log');
+    const videos = Array.from(document.querySelectorAll('video'));
+    const mediaEvents = [
+      "loadstart", "suspend", "abort", "error", "emptied", "stalled",
+      "loadedmetadata", "loadeddata", "canplay", "canplaythrough", "playing",
+      "waiting", "seeking", "seeked", "ended", "durationchange",
+      "play", "pause", "ratechange", "resize", "volumechange"
+    ];
+
+    function log(message) {
+      const now = new Date().toISOString().slice(11, 23);
+      logEl.textContent += `[${now}] ${message}\n`;
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    videos.forEach((video, idx) => {
+      mediaEvents.forEach(event => {
+        video.addEventListener(event, () => {
+          log(`video${idx + 1}: ${event}`);
+        });
+      });
+    });
+
+    function playAll() {
+      videos.forEach(v => v.play().catch(e => log(`video error: ${e.message}`)));
+    }
+
+    function pauseAll() {
+      videos.forEach(v => v.pause());
+    }
+  </script>
+
+</body>
+</html>
