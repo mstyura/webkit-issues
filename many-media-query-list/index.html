@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Safari MediaQuery CPU usage</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Safari MediaQuery CPU Usage Demo</h1>
+  <p>This page registers 50000 media queries. Open MacOS's Activity Monitor to see CPU usage of Safari process.</p>
+
+  <script>
+    const arr = Array.from({ length: 50000 }, (_, i) => i);
+
+    // Register 50000 media queries
+    const mqls = arr.map(val =>
+      window.matchMedia(`(max-width: ${Math.min(val / 100, 20)}px)`)
+    );
+
+    // Keep requesting animation frames to trigger Page::updateRendering()
+    function loop() {
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    // Prevent garbage collection
+    window.__mqls = mqls;
+  </script>
+</body>
+</html>
