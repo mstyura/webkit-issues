@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebGL Spinning Triangle - 4K</title>
+  <style>
+    body, html {
+      margin: 0;
+      overflow: hidden;
+      background: white;
+    }
+    canvas, video {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        display: block;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-width: 100vw;
+        max-height: 100vh;
+    }
+    p {
+        position: relative;
+        will-change: contents;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 4px 8px;
+        z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <video id="video1" muted loop autoplay width="3840" height="2160"></video>
+  <p id="fps-placeholder"></p>
+
+  <script>
+    const fpsHolder = document.getElementById("fps-placeholder");
+    const video1 = document.getElementById("video1");
+
+    const worker = new Worker("./worker.js");
+    worker.onmessage = async function(e) {
+      switch (e.data.msg) {
+      case 'fps':
+          fpsHolder.innerText = `${e.data.fps.toFixed(2)} fps`;
+          break;
+      case 'videoTrack':
+        const videoTrack = e.data.videoTrack;
+        console.log("got video track from worker: ", videoTrack);
+        const stream = new MediaStream([videoTrack])
+        video1.srcObject = stream;
+
+        try {
+          await video1.play();
+        } catch (e) {
+          console.error("failed to start play", e);
+        }
+        break;
+      }
+    };
+
+    worker.postMessage({ msg: 'init' }, []);
+  </script>
+</body>
+</html>

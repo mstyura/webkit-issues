@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebGL Spinning Triangle - 4K</title>
+  <style>
+    body, html {
+      margin: 0;
+      overflow: hidden;
+      background: white;
+    }
+    canvas, video {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        display: block;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-width: 100vw;
+        max-height: 100vh;
+    }
+    p {
+        position: relative;
+        will-change: contents;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 4px 8px;
+        z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="glcanvas" width="3840" height="2160"></canvas>
+  <p id="fps-placeholder"></p>
+
+  <script>
+    const fpsHolder = document.getElementById("fps-placeholder");
+    const canvas = document.getElementById("glcanvas");
+    const offCanvas = canvas.transferControlToOffscreen();
+    const worker = new Worker("./worker.js");
+    worker.onmessage = function(e) {
+      switch (e.data.msg) {
+      case 'fps':
+          fpsHolder.innerText = `${e.data.fps.toFixed(2)} fps`;
+          break;
+      }
+    };
+
+  worker.postMessage({ msg: 'init', canvas: offCanvas }, [offCanvas]);
+ </script>
+</body>
+</html>

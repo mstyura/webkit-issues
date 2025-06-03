@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Capture camera</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #video-container {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      max-width: 100vw;
+      max-height: 100vh;
+      gap: 4px;
+    }
+
+    video {
+      display: block;
+      object-fit: contain;
+      max-width: 100vw;
+      max-height: 100vh;
+    }
+
+    #play-button {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="video-container">
+    <button id="play-button">Play camera preview</button>
+    <video id="video1" muted loop preload="metadata" />
+  </div>
+
+  <script>
+
+    document.getElementById('play-button').addEventListener('click', async () => {
+      let camera;
+      try {
+        camera = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: {
+              ideal: "user"
+            },
+            width: {
+              min: 1920,
+            },
+            height: {
+              min: 1080,
+            },
+            frameRate: {
+              min: 30,
+              ideal: 60,
+            },
+          }
+        })
+      } catch (e) {
+        console.error("failed to get user media", e);
+        return;
+      }
+
+      const video1 = document.getElementById("video1");
+
+      video1.srcObject = camera;
+
+      try {
+        await video1.play();
+      } catch (e) {
+        console.error("failed to start playback");
+        return;
+      }
+
+    });
+
+  </script>
+</body>
+</html>
