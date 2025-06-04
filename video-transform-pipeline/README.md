@@ -9,7 +9,7 @@ The version of **Safari Technology Preview used is Release 219 (Safari 18.4, Web
 The version of XCode Instruments is 16.
 XCode Instrument profiles were recorded twice once with CPU profiler preset, another with Time profiler preset.
 Each XCode trace file has 2 sessions one with data for GPU process and one with data for WebContent process.
-The trace files produce by Time Profiler were converted to format accepted by https://profiler.firefox.com/ with [instruments-to-gecko](https://github.com/benjaminRomano/instruments-to-gecko) tool.
+The trace files produce by Time Profiler were converted to format accepted by [profiler.firefox.com](https://profiler.firefox.com/) with [instruments-to-gecko](https://github.com/benjaminRomano/instruments-to-gecko) tool.
 
 ## Single H.264-encoded 4K video at 60 FPS played from file
 
@@ -182,20 +182,23 @@ The `CPU` profile of `WebContent` process didn't change much.
   </summary>
 
   ![Activity Monitor](./06-camera-webgl-video-track-generator/resources/activity-monitor.png)
+
   </details>
 * <details>
   <summary>
   GPU process CPU profile
   </summary>
 
-  ![Activity Monitor](./06-camera-webgl-video-track-generator/resources/cpu-profiler-gpu-process.png)
+  ![WebContent process CPU profile](./06-camera-webgl-video-track-generator/resources/cpu-profiler-gpu-process.png)
+
   </details>
 * <details>
   <summary>
   WebContent process CPU profile
   </summary>
 
-  ![Activity Monitor](./06-camera-webgl-video-track-generator/resources/cpu-profiler-webcontent.png)
+  ![WebContent process CPU profile](./06-camera-webgl-video-track-generator/resources/cpu-profiler-webcontent.png)
+
   </details>
 
 **Observation**: CPU usage is dominated by memory copying and redundant pixel transformations.
