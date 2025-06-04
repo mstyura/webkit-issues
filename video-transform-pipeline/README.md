@@ -58,7 +58,7 @@ The trace files produce by Time Profiler were converted to format accepted by [p
 **Observation**: When video comes from the local camera and is rendered by the browser via a `<video>` element, it consumes more `CPU` in both the `WebContent` and `GPU` processes - even though the camera is captured at `1080p` and `30 FPS`, whereas the previous demo rendered `4K` video at `60 FPS`.
 
 
-## Render moving triangle on 4k `<canvas>` via `WebGL` on main thread;
+## Render moving triangle on 4k `<canvas>` via `WebGL` on main thread
 
 **Goal**: Estimate how much CPU resources are consumed when rendering simple WebGL program in `4K` at `60 FPS`.
 
