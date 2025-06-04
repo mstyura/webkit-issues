@@ -193,9 +193,8 @@ The `CPU` profile of `WebContent` process didn't change much.
 
   </details>
 * <details>
-  <summary>
-  WebContent process CPU profile
-  </summary>
+
+  <summary>WebContent process CPU profile</summary>
 
   ![WebContent process CPU profile](./06-camera-webgl-video-track-generator/resources/cpu-profiler-webcontent.png)
 
