@@ -162,3 +162,40 @@ The `CPU` profile of `WebContent` process didn't change much.
 1.21 Gc  12,7%	   WebCore::SharedVideoFrameInfo::createPixelBufferFromMemory(std::__1::span<unsigned char const, 18446744073709551615ul>, __CVPixelBufferPool*)
 986.77 Mc  10,3%	   WebKit::RemoteImageBuffer::getPixelBuffer(WebCore::PixelBufferFormat, WebCore::IntPoint, WebCore::IntSize, WTF::CompletionHandler<void ()>&&)
 ```
+
+## Produce a `MediaStreamTrack` from camera video with effects applied via `WebGL`
+
+**Goal**: Estimate the CPU usage of the entire camera capture pipeline when applying custom effects.
+
+**Description**: The camera track is obtained using `getUserMedia`. The track is transferred into a worker, where `VideoFrame`s are extracted with `MediaStreamTrackProcessor`. Effects are applied to the camera frames via `WebGL` on an `OffscreenCanvas`. New `VideoFrame`s with the effects applied are created using `new VideoFrame(offscreenCanvas)`. This resulting sequence of new `VideoFrame`s is produced as a `MediaStreamTrack` via `VideoTrackGenerator`. The `MediaStreamTrack` is passed back to the main thread to render a preview on a `<video>` element and potentially be sent over `WebRTC`.
+
+* [Open](https://mstyura.github.io/webkit-issues/video-transform-pipeline/06-camera-webgl-video-track-generator/index.html) demo;
+* [View source of `index.html`](https://github.com/mstyura/webkit-issues/blob/main/video-transform-pipeline/06-camera-webgl-video-track-generator/index.html);
+* [View source of `worker.js`](https://github.com/mstyura/webkit-issues/blob/main/video-transform-pipeline/06-camera-webgl-video-track-generator/worker.js);
+* [Open](https://share.firefox.dev/4kKX3Qx) WebGPU profile;
+* [Open](https://share.firefox.dev/4dJgeYO) WebContent profile;
+* [Download](https://mstyura.github.io/webkit-profiler-data/cpu-profiler/06-camera-webgl-video-track-generator.trace.tar.gz) XCode trace file (CPU profiler);
+* [Download](https://mstyura.github.io/webkit-profiler-data/time-profiler/06-camera-webgl-video-track-generator.trace.tar.gz) XCode trace file (Time profiler);
+* <details>
+  <summary>
+  Activity Monitor screenshot
+  </summary>
+
+  ![Activity Monitor](./06-camera-webgl-video-track-generator/resources/activity-monitor.png)
+  </details>
+* <details>
+  <summary>
+  GPU process CPU profile
+  </summary>
+
+  ![Activity Monitor](./06-camera-webgl-video-track-generator/resources/cpu-profiler-gpu-process.png)
+  </details>
+* <details>
+  <summary>
+  WebContent process CPU profile
+  </summary>
+
+  ![Activity Monitor](./06-camera-webgl-video-track-generator/resources/cpu-profiler-webcontent.png)
+  </details>
+
+**Observation**: CPU usage is dominated by memory copying and redundant pixel transformations.
