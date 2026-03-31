@@ -80,7 +80,9 @@
         return;
       }
 
-      worker.postMessage({ msg: 'init', inputVideoTrack: camera.getVideoTracks()[0] }, []);
+      const track = camera.getVideoTracks()[0];
+
+      worker.postMessage({ msg: 'init', inputVideoTrack: track }, [track]);
     });
 
     const worker = new Worker("./worker.js");
